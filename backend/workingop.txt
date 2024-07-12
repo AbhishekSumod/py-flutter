@@ -1,0 +1,71 @@
+import moviepy.editor as mp
+import speech_recognition as sr
+from textblob import TextBlob
+import re
+import language_tool_python
+
+# Function to transcribe audio from video
+def transcribe_video(video_path):
+    try:
+        # Load video and extract audio
+        video = mp.VideoFileClip(video_path)
+        audio_path = "temp_audio.wav"
+        video.audio.write_audiofile(audio_path)
+
+        # Transcribe audio
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(audio_path) as source:
+            audio_data = recognizer.record(source, duration=None)  # No timeout set
+            transcript = recognizer.recognize_google(audio_data)
+        return transcript
+    except Exception as e:
+        print("Error during transcription:", e)
+        return ""
+
+# Function to perform sentiment analysis
+def analyze_sentiment(text):
+    blob = TextBlob(text)
+    sentiment_score = blob.sentiment.polarity
+    return sentiment_score
+
+# Function to count filler words
+def count_fillers(text):
+    fillers = re.findall(r'\b(um|uh|you know)\b', text, flags=re.IGNORECASE)
+    filler_count = len(fillers)
+    return filler_count
+
+# Function to check grammar errors
+def check_grammar(text):
+    try:
+        tool = language_tool_python.LanguageTool('en-US')
+        matches = tool.check(text)
+        errors = len(matches)
+        return errors
+    except Exception as e:
+        print("Error checking grammar:", e)
+        return 0
+
+# Video file path
+video_path = r"C:\Users\abhis\Downloads\How to make a basic self-introduction video for online English teaching.mp4"
+
+# Transcribe video
+transcript = transcribe_video(video_path)
+
+if transcript:
+    # Perform sentiment analysis
+    sentiment_score = analyze_sentiment(transcript)
+
+    # Count filler words
+    filler_count = count_fillers(transcript)
+
+    # Check grammar errors
+    grammar_errors = check_grammar(transcript)
+
+    # Print transcript, sentiment score, filler count, and grammar errors
+    print("Transcript:")
+    print(transcript)
+    print("Sentiment Score:", sentiment_score)
+    print("Filler Count:", filler_count)
+    print("Grammar Errors:", grammar_errors)
+else:
+    print("Transcription failed or no speech detected in the audio.")

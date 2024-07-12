@@ -1,0 +1,19 @@
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Initialize the sentiment analyzer
+sid = SentimentIntensityAnalyzer()
+
+# Example text
+text = "hey there my name is larry i am an english teacher with psalm and tuil certificates which means i'm qualified to teach kids young professionals and even adults besides teaching i do public speaking for five years now during my spare time i do vlogging and video editing i studied five languages so i know how to help you widen your vocabulary i can dance act and sing too making sure that all my lessons are interesting interactive and informative so come and book a class with me see you"
+
+# Perform sentiment analysis
+sentiment_scores = sid.polarity_scores(text)
+
+# Interpret the sentiment scores
+if sentiment_scores['compound'] >= 0.05:
+    print("Positive sentiment")
+elif sentiment_scores['compound'] <= -0.05:
+    print("Negative sentiment")
+else:
+    print("Neutral sentiment")

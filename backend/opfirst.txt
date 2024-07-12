@@ -1,0 +1,39 @@
+import moviepy.editor as mp
+import speech_recognition as sr
+from textblob import TextBlob
+import re
+import language_tool_python
+
+# Function to transcribe audio from video
+def transcribe_video(video_path):
+    # Load video and extract audio
+    video = mp.VideoFileClip(video_path)
+    audio_path = "temp_audio.wav"
+    video.audio.write_audiofile(audio_path)
+
+    # Transcribe audio
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(audio_path) as source:
+        audio_data = recognizer.record(source)
+        transcript = recognizer.recognize_google(audio_data)
+    return transcript
+
+# Function to perform sentiment analysis
+def analyze_sentiment(text):
+    blob = TextBlob(text)
+    sentiment_score = blob.sentiment.polarity
+    return sentiment_score
+
+# Video file path
+video_path = r"C:\Users\abhis\Downloads\SELF-INTRODUCTION video for ESL Teaching _ #Selfintroductionforeslteacher #selfintroduction.mp4"
+
+# Transcribe video
+transcript = transcribe_video(video_path)
+
+# Perform sentiment analysis
+sentiment_score = analyze_sentiment(transcript)
+
+# Print transcript and sentiment score
+print("Transcript:")
+print(transcript)
+print("Sentiment Score:", sentiment_score)
